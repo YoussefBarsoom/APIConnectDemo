@@ -33,7 +33,14 @@ app.use(authentication);
 
 app.post('/loan/request', (req, res) => {
     const { customerId, name, email, loanAmount, country, employmentStatus } = req.body;
-    res.json({ message: `Loan request received for ${name}` });
+    res.json({
+        "version": "v1",
+        customerId,
+        "eligibility": "Approved",
+        "maxLoanAmount": 30000,
+        "interestRate": "5.5%",
+        "message": "You are eligible for a loan up to $30,000 at a 5.5% interest rate."
+      });
 });
 
 app.get('/customer/employmentStatus/:customerID', (req, res) => {
