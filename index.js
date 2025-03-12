@@ -52,7 +52,7 @@ app.get('/customer/totalbalance/:customerID', (req, res) => {
     res.json({ customerID, totalBalance: "$10,000" });
 });
 
-app.post('/authorize', (req, res) => {
+app.get('/authorize', (req, res) => {
     const authheader = req.headers.authorization;
 
     if (!authheader) {
