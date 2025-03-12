@@ -29,7 +29,6 @@ function authentication(req, res, next) {
 app.use(express.json());
 
 // Protected API routes using authentication
-app.use(authentication);
 
 app.post('/loan/request', (req, res) => {
     const { customerId, name, email, loanAmount, country, employmentStatus } = req.body;
@@ -52,6 +51,30 @@ app.get('/customer/totalbalance/:customerID', (req, res) => {
     const customerID = req.params.customerID;
     res.json({ customerID, totalBalance: "$10,000" });
 });
+
+app.post('/authorize', (req, res) => {
+    const authheader = req.headers.authorization;
+
+    if (!authheader) {
+        res.setHeader('WWW-Authenticate', 'Basic realm="API Connect"');
+        return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    try {
+        const auth = Buffer.from(authheader.split(' ')[1], 'base64').toString().split(':');
+        const user = auth[0];
+        const pass = auth[1];
+
+        if (user === 'admin' && pass === 'password') {
+            return res.json({ message: 'Authentication successful', authorized: true });
+        } else {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+    } catch (error) {
+        return res.status(400).json({ error: 'Invalid authentication format' });
+    }
+});
+
 
 // Start the server
 app.listen(port, () => {
